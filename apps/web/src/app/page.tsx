@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import Link from 'next/link';
 import { FiStar, FiArrowRight } from 'react-icons/fi';
 import { productApi, Product } from '@/lib/api';
