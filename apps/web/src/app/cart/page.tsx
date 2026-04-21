@@ -47,27 +47,19 @@ export default function CartPage() {
   }
 
   return (
-    <div className="container animate-in">
-      <h1 className="page-title">Shopping Cart</h1>
-      <p className="page-subtitle">
+    <div className="container animate-in pt-20 pb-16">
+      <h1 className="page-title mb-6">Shopping Cart</h1>
+      <p className="page-subtitle mb-12">
         You have {items.length} {items.length === 1 ? 'item' : 'items'} in your cart
       </p>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '32px', alignItems: 'start' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          {items.map((item) => (
-            <div
-              key={item.productId}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '20px',
-                padding: '20px',
-                background: 'var(--color-bg-card)',
-                border: '1px solid var(--color-border)',
-                borderRadius: 'var(--radius-lg)',
-              }}
-            >
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8 items-start">
+          <div className="flex flex-col gap-4">
+            {items.map((item) => (
+              <div
+                key={item.productId}
+                className="flex items-center gap-5 p-5 bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-[var(--radius-lg)]"
+              >
               <div style={{ 
                 width: '100px', 
                 height: '100px', 
@@ -76,7 +68,9 @@ export default function CartPage() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                padding: '10px'
+                padding: '10px',
+                position: 'relative',
+                overflow: 'hidden'
               }}>
                 <Image
                   src={item.image}
