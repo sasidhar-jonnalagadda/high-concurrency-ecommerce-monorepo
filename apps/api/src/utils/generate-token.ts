@@ -4,10 +4,6 @@ import { env } from '../config/env';
 
 /**
  * Generates a JWT token and sets it as an HTTP-only cookie.
- * 
- * @param res - Express Response object to set the cookie on
- * @param userId - Unique identifier of the user to encode in the token
- * @returns The generated JWT string
  */
 export function generateToken(res: Response, userId: string): string {
   const token = jwt.sign(
@@ -19,7 +15,7 @@ export function generateToken(res: Response, userId: string): string {
   res.cookie('jwt', token, {
     httpOnly: true,
     secure: env.NODE_ENV === 'production',
-    sameSite: 'lax', // 'lax' is required for Stripe redirect flows to maintain session
+    sameSite: env.NODE_ENV === 'production' ? 'none' : 'lax', // Required 'none' for Vercel -> Render cross-domain
     maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
   });
 
@@ -27,15 +23,13 @@ export function generateToken(res: Response, userId: string): string {
 }
 
 /**
- * Clears the JWT authentication cookie by setting it to an empty string and expiring it.
- * 
- * @param res - Express Response object
+ * Clears the JWT authentication cookie.
  */
 export function clearToken(res: Response): void {
   res.cookie('jwt', '', {
     httpOnly: true,
     expires: new Date(0),
     secure: env.NODE_ENV === 'production',
-    sameSite: 'lax',
+    sameSite: env.NODE_ENV === 'production' ? 'none' : 'lax', // Must perfectly match creation flags
   });
 }
