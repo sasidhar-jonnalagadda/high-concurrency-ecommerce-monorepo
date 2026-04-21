@@ -16,14 +16,14 @@ The following diagram illustrates the data flow and layer interactions within th
 ```mermaid
 graph TD
     subgraph Client_Layer [Client Layer]
-        A[Next.js Web Application]
+        A["Next.js Web Application"]
     end
 
     subgraph Logic_Layer [Logic Layer]
-        B[Express API Engine]
-        C[@ecommerce/shared Validation]
-        D[Redis Distributed Lock Manager]
-        E[Prisma ORM / PostgreSQL]
+        B["Express API Engine"]
+        C["@ecommerce/shared Validation"]
+        D["Redis Distributed Lock Manager"]
+        E["Prisma ORM / PostgreSQL"]
         
         B --- C
         B --- D
@@ -31,7 +31,7 @@ graph TD
     end
 
     subgraph External_Webhooks [External Webhooks]
-        F[Stripe Payment Signals]
+        F["Stripe Payment Signals"]
         F --- B
     end
 
