@@ -53,3 +53,12 @@ export class LockAcquisitionError extends AppError {
     );
   }
 }
+
+export class ConcurrencyConflictError extends AppError {
+  constructor(resource: string) {
+    super(
+      `Concurrency conflict detected for ${resource}. Please try again.`,
+      409
+    );
+  }
+}
