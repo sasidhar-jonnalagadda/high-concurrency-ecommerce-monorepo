@@ -68,7 +68,7 @@ graph TD
 - **Cross-Origin Authentication Pipeline**: Engineered a secure auth flow utilizing HTTP-only JWTs with dynamic `SameSite` and `Secure` policies, safely bypassing strict browser security protocols between serverless frontends (Vercel) and load-balanced cloud runtimes (Render).
 - **Serverless Database Provisioning**: Integrated a serverless PostgreSQL database (Neon) with Prisma ORM, implementing connection pooling to handle high-concurrency read/write operations during peak traffic spikes.
 - **Reverse Proxy Gateway Security**: Secured the API gateway by configuring Express trust policies and robust rate-limiting (`express-rate-limit`), mitigating DDoS vectors and brute-force authentication attacks.
-- **Redis-Backed Distributed Locks**: Concurrency control implemented for checkout operations to prevent race conditions and inventory over-allocation.
+- **Strict Concurrency & Deadlock Prevention**: Engineered a bulletproof checkout flow utilizing a Redis-backed Sort-then-Lock mechanism combined with PostgreSQL Optimistic Concurrency Control (OCC), mathematically eliminating distributed deadlocks and race conditions during high-volume inventory reservations.
 
 ---
 
