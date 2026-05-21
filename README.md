@@ -20,6 +20,7 @@ A distributed, headless e-commerce architecture designed for high-concurrency tr
 | :--- | :--- | :--- | :--- |
 | **Admin** | `test@admin.com` | `123456` | Full Dashboard & Inventory Management |
 | **User** | `testuser@gmail.com` | `password` | Shopping Cart & Checkout Flow |
+| **Test Card** | `4242 4242 4242 4242` | `CVC: 123` | Stripe Sandbox Testing |
 
 *(Note: The database is refreshed periodically. Please use the credentials above to bypass registration.)*
 
@@ -87,6 +88,8 @@ graph TD
 ---
 
 ## 💻 Local Development Setup
+> [!IMPORTANT]
+> Environment Note: This project uses Docker to mirror production infrastructure locally. While the live site runs on Neon (Postgres) and Upstash/Render (Redis), the local setup uses containerized versions to ensure a zero-cost, offline-friendly development experience.
 
 ### Prerequisites
 - Node.js 20+
@@ -97,7 +100,7 @@ graph TD
 
 1. **Clone and Install**
    ```bash
-   git clone [https://github.com/sasidhar-jonnalagadda/high-concurrency-ecommerce-monorepo.git](https://github.com/sasidhar-jonnalagadda/high-concurrency-ecommerce-monorepo.git)
+   git clone https://github.com/sasidhar-jonnalagadda/high-concurrency-ecommerce-monorepo.git
    cd high-concurrency-ecommerce-monorepo
    npm install
    ```
