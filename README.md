@@ -1,140 +1,112 @@
-# High-Concurrency E-Commerce Monorepo
+# Full-Stack E-Commerce Platform
 
-[![Next.js](https://img.shields.io/badge/Next.js-000000?style=flat&logo=next.js&logoColor=white)](https://nextjs.org/)
-[![Express](https://img.shields.io/badge/Express-000000?style=flat&logo=express&logoColor=white)](https://expressjs.com/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat&logo=postgresql&logoColor=white)](https://neon.tech/)
-[![Redis](https://img.shields.io/badge/Redis-DC382D?style=flat&logo=redis&logoColor=white)](https://redis.io/)
-[![Turborepo](https://img.shields.io/badge/Turborepo-EF4444?style=flat&logo=turborepo&logoColor=white)](https://turbo.build/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-
-A distributed, headless e-commerce architecture designed for high-concurrency transaction processing, secure cross-origin authentication, and automated inventory lifecycle management.
+A responsive full-stack e-commerce web application featuring comprehensive product catalogs, dynamic shopping carts, and a structured check-out workflow.
 
 ---
 
-## 🚀 Live Demo & Access
+## 🏗️ Architecture Overview
 
-**Production URL:** [https://high-concurrency-ecommerce-monorepo.vercel.app](https://high-concurrency-ecommerce-monorepo.vercel.app)
+The platform operates on a standard 3-tier full-stack architecture designed to handle secure e-commerce workflows.
 
-**Demo Credentials:**
-| Role | Email | Password | Access Level |
-| :--- | :--- | :--- | :--- |
-| **Admin** | `test@admin.com` | `123456` | Full Dashboard & Inventory Management |
-| **User** | `testuser@gmail.com` | `password` | Shopping Cart & Checkout Flow |
-| **Test Card** | `4242 4242 4242 4242` | `CVC: 123` | Stripe Sandbox Testing |
-
-*(Note: The database is refreshed periodically. Please use the credentials above to bypass registration.)*
-
----
-
-## 🏗️ System Architecture
-
-The following diagram illustrates the distributed data flow and cloud layer interactions deployed across Vercel, Render, and Neon.
-
-```mermaid
-graph TD
-    subgraph Edge_Network [Frontend Edge - Vercel]
-        A["Next.js Web Application (App Router)"]
-    end
-
-    subgraph Cloud_Runtime [Backend Services - Render]
-        B["Express API Gateway"]
-        C["@ecommerce/shared Validation"]
-        D["Rate Limiter & Trust Proxy"]
-        
-        B --- C
-        B --- D
-    end
-
-    subgraph Serverless_Data [Data Persistence - Neon/Redis]
-        E["PostgreSQL (Neon Serverless)"]
-        F["Redis Distributed Cache"]
-        
-        B --- E
-        B --- F
-    end
-
-    subgraph External_Webhooks [Third-Party Signals]
-        G["Stripe Payment Webhooks"]
-        G --- B
-    end
-
-    A -- "Cross-Origin JWT (SameSite: None)" --> B
+```text
+                     [ External Stripe API ]
+                               |
+                               v
+[ Client Browser ] <--> [ Next.js Frontend ] (Port 3000)
+                               |
+                               v
+                      [ Express.js Backend Server ] (Port 4000)
+                               |
+                               v
+                      [ PostgreSQL Database ] (Port 5432)
 ```
 
+- **Frontend (Next.js):** Handles the user interface, routing, catalog browsing, shopping cart workflows, and responsive UI layouts.
+- **Backend Server (Node.js/Express):** Manages backend routing logic, processes REST API endpoints, handles data validation contracts, and coordinates with third-party payment pathways.
+- **Database Layer (PostgreSQL):** A persistent relational storage layer utilizing Prisma ORM to save user profiles, maintain product records, and track completed order transactions.
+
 ---
 
-## ⚙️ Core Technical Engineering
+## ⚙️ Core Technical Features
 
-- **Distributed Monorepo Architecture**: Utilized Turborepo to isolate frontend (Next.js) and backend (Express/Node) environments, reducing CI/CD deployment times by enabling cached, independent micro-builds.
-- **Cross-Origin Authentication Pipeline**: Engineered a secure auth flow utilizing HTTP-only JWTs with dynamic `SameSite` and `Secure` policies, safely bypassing strict browser security protocols between serverless frontends (Vercel) and load-balanced cloud runtimes (Render).
-- **Serverless Database Provisioning**: Integrated a serverless PostgreSQL database (Neon) with Prisma ORM, implementing connection pooling to handle high-concurrency read/write operations during peak traffic spikes.
-- **Reverse Proxy Gateway Security**: Secured the API gateway by configuring Express trust policies and robust rate-limiting (`express-rate-limit`), mitigating DDoS vectors and brute-force authentication attacks.
-- **Strict Concurrency & Deadlock Prevention**: Engineered a bulletproof checkout flow utilizing a Redis-backed Sort-then-Lock mechanism combined with PostgreSQL Optimistic Concurrency Control (OCC), mathematically eliminating distributed deadlocks and race conditions during high-volume inventory reservations.
+- **Relational Data Mapping:** Designed a clear database schema using PostgreSQL to cleanly manage relational connections between users, inventory lines, and historical order details.
+- **Server-Verified Authentication:** Implemented secure backend session validation using JSON Web Tokens (JWT) stored exclusively inside secure HTTP-only cookies to protect user session data.
+- **Transactional Ingestion:** Utilized robust database transaction blocks during checkout actions to update stock listings safely, eliminating inventory overselling or race conditions.
+- **Boundary Verification Architecture:** Integrated input structural parsing using TypeScript schemas to filter user payloads at the API layer, rejecting invalid formats before they hit the database.
 
 ---
 
 ## 🛠️ Technology Stack Matrix
 
-| Layer | Technology | Infrastructure / Purpose |
-| :--- | :--- | :--- |
-| **Frontend** | Next.js 15, Tailwind CSS | **Vercel** / Edge-rendered client routing & UI. |
-| **Backend** | Express.js, Node.js | **Render** / RESTful API orchestration. |
-| **Shared** | Zod, TypeScript | Contract-first development and validation schemas. |
-| **Database** | PostgreSQL, Prisma | **Neon Serverless** / Relational data persistence. |
-| **Cache** | Redis | Distributed locking and transient data storage. |
-| **Orchestration** | Turborepo | Monorepo build and task management. |
-| **Payments** | Stripe | PCI-compliant transaction processing. |
+| Layer | Technology | Purpose |
+| --- | --- | --- |
+| **Frontend** | Next.js, React, Tailwind CSS | Client interface, shopping cart management, and layout structure. |
+| **Backend** | Express.js, Node.js | Application routing, custom middleware execution, and REST APIs. |
+| **Database** | PostgreSQL, Prisma ORM | Persistent relational data management and query configuration. |
+| **Security** | JSON Web Tokens (JWT) | Secure server-side validation and authentication cookie handling. |
+| **Payments** | Stripe SDK | Sandbox transaction emulation and checkout flows. |
 
 ---
 
 ## 💻 Local Development Setup
-> [!IMPORTANT]
-> Environment Note: This project uses Docker to mirror production infrastructure locally. While the live site runs on Neon (Postgres) and Upstash/Render (Redis), the local setup uses containerized versions to ensure a zero-cost, offline-friendly development experience.
 
 ### Prerequisites
+
 - Node.js 20+
-- Docker Desktop (for local Redis/PostgreSQL)
-- Stripe CLI
+- PostgreSQL (installed locally)
 
-### Boot Sequence
+### Installation Steps
 
-1. **Clone and Install**
-   ```bash
-   git clone https://github.com/sasidhar-jonnalagadda/high-concurrency-ecommerce-monorepo.git
-   cd high-concurrency-ecommerce-monorepo
-   npm install
-   ```
+**1. Clone and Install**
 
-2. **Configure Environment Variables**
-   Copy the template files and populate your local keys:
-   ```bash
-   cp .env.example .env
-   cp apps/api/.env.example apps/api/.env
-   cp apps/web/.env.example apps/web/.env
-   ```
+```bash
+git clone https://github.com/sasidhar-jonnalagadda/fullstack-ecommerce-app.git
+cd fullstack-ecommerce-app
+npm install
+```
 
-3. **Initialize Infrastructure (Docker)**
-   Launch the local Redis and PostgreSQL containers.
-   ```bash
-   docker compose up -d
-   ```
+**2. Configure Environment Variables**
 
-4. **Hydrate the Database**
-   Push the Prisma schema to your local database and run the seed script to generate admin credentials and dummy products.
-   ```bash
-   cd apps/api
-   npx prisma db push
-   npx prisma db seed
-   cd ../..
-   ```
+Create a `.env` file in your root folder and configure the following parameters:
 
-5. **Start the Platform**
-   Boot the API, Web app, and shared packages in parallel.
-   ```bash
-   npm run dev
-   ```
+```env
+# Database Link configuration
+DATABASE_URL="postgresql://dbuser:password@localhost:5432/ecommercedb"
+
+# Secret encryption string for verification keys
+JWT_SECRET="your_secure_jwt_token_key"
+
+# Stripe API Configuration (Sandbox)
+STRIPE_SECRET_KEY="your_stripe_test_secret_key"
+```
+
+**3. Initialize Database**
+
+Map out your schemas and tables using Prisma:
+
+```bash
+cd api
+npx prisma db push
+npx prisma db seed
+cd ..
+```
+
+**4. Start the Platform**
+
+Boot the client and server application layers:
+
+```bash
+# In terminal 1 (Backend Server)
+cd api
+npm run start
+
+# In terminal 2 (Frontend Client)
+cd web
+npm run dev
+```
 
 ---
 
 ## 📄 License
-MIT License. See LICENSE for details.
+
+This project is licensed under the MIT License.
